@@ -1,8 +1,9 @@
-var http  = require('http');
-var fs    = require('fs');
-var path  = require('path');
-var mime  = require('mime');
-var cache = [];
+var http        = require('http');
+var fs          = require('fs');
+var path        = require('path');
+var mime        = require('mime');
+var chatServer  = require('./server/chat_server.js') 
+var cache       = [];
 
 
 
@@ -18,6 +19,8 @@ server.listen(3000, function() {
   console.log("A server has been conjured.\
   Seek out the local host on port 3000.");
 });
+
+chatServer.listen(server);
 
 ////////////////////////
 // Helper Functions
