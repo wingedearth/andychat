@@ -82,7 +82,7 @@ function handleMsgBroadcast(socket, nickNames) {
 	});
 }
 
-function handleNameChangeAttempts(socket, nickNames, namesUsed) {
+function handleNameChangeAttempts(socket,) {
 	socket.on('nameAttempt', function(name) {
 
     if (name.indexOf('Guest') ==0) {
@@ -123,7 +123,11 @@ function handleRoomJoin(socket) {
   })
 }
 
-function handleClientDisconnect() {
-
+function handleClientDisconnect(socket) {
+  socket.on('disconnect', function() {
+    var nameIndex = names.indexOf(nickNames[socket.id]);
+    delete namesUsed[nameIndex];
+    delete nickNames[socket.id];
+  });
 }
 
