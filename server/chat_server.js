@@ -82,7 +82,7 @@ function handleMsgBroadcast(socket, nickNames) {
 	});
 }
 
-function handleNameChangeAttempts(socket,) {
+function handleNameChangeAttempts(socket) {
 	socket.on('nameAttempt', function(name) {
 
     if (name.indexOf('Guest') ==0) {
