@@ -28,6 +28,7 @@ exports.listen = function(server) {
 			socket.emit('rooms', io.sockets.manager.rooms);
 		})
 
+    handleClientDisconnect(socket, nickNames, namesUsed);
 	})
 }
 
@@ -83,11 +84,13 @@ function handleMsgBroadcast(socket, nickNames) {
 
 function handleNameChangeAttempts(socket, nickNames, namesUsed) {
 	socket.on('nameAttempt', function(name) {
-		if (name.indexOf('Guest') ==0) {
+
+    if (name.indexOf('Guest') ==0) {
 			socket.emit('nameResult', {
 				success: false,
 				message: 'Names cannot begin with "Guest".'
 			});
+
 		} else {
 			if (namesUsed.indexOf(name) == -1) {
 				var previousName = nickNames[socket.id];
@@ -102,7 +105,8 @@ function handleNameChangeAttempts(socket, nickNames, namesUsed) {
 				socket.broadcast.to(currentRoom[socket.id]).emit('message,', {
 					text: previousName + ' shall now be referred to as ' + name + '.'
 				});
-			} else {
+
+			} else { // if name is already in use, return error message
 				socket.emit('nameResult', {
 					success: false,
 					message: 'That name is already in use, and we value originality here.'
@@ -113,5 +117,13 @@ function handleNameChangeAttempts(socket, nickNames, namesUsed) {
 }
 
 function handleRoomJoin(socket) {
+  socket.on('join', function(room) {
+    socket.leave(currentRoom[socket.id]);
+    joinRoom(socket, room.newRoom);
+  })
+}
+
+function handleClientDisconnect() {
 
 }
+
