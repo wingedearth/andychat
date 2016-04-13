@@ -15,6 +15,7 @@ exports.listen = function(server) {
 	io.sockets.on('connection', function (socket) {
 		guestNumber = assignGuestName(socket, guestNumber, nickNames, namesUsed);
 
+		console.log("checkpoint 1");
 		joinRoom(socket, 'Lobby'); // place user in lobby upon connection
 
 		handleMsgBroadcast(socket, nickNames); // handle user messages
@@ -26,11 +27,12 @@ exports.listen = function(server) {
 		// send list of occupied rooms upon request
 		socket.on('rooms', function() {
 			socket.emit('rooms', io.sockets.manager.rooms);
-		})
+		});
 
-    handleClientDisconnect(socket, nickNames, namesUsed);
-	})
-}
+    // handleClientDisconnect(socket, nickNames, namesUsed);
+    handleClientDisconnect(socket);
+	});
+};
 
 
 ////////////////////////
@@ -49,6 +51,7 @@ function assignGuestName(socket, guestNumber, nickNames, namesUsed) {
 }
 
 function joinRoom(socket, room) {
+	console.log("checkpoint 2");
 	socket.join(room);
 	currentRoom[socket.id] = room;
 	socket.emit('joinResult', {room: room});
@@ -56,7 +59,11 @@ function joinRoom(socket, room) {
 		text: nickNames[socket.id] + ' has joined ' + room + '.'
 	});
 
+	console.log("checkpoint 3");
+
 	var usersInRoom = io.sockets.clients(room);
+	console.log("checkpoint 4");
+
 	if (usersInRoom.length > 1) {
 		var usersInRoomSummary = 'Participants currently in ' + room + ': ';
 		for (var index in usersInRoom) {
@@ -120,7 +127,7 @@ function handleRoomJoin(socket) {
   socket.on('join', function(room) {
     socket.leave(currentRoom[socket.id]);
     joinRoom(socket, room.newRoom);
-  })
+  });
 }
 
 function handleClientDisconnect(socket) {
