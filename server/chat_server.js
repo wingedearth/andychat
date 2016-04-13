@@ -74,7 +74,11 @@ function joinRoom(socket, room) {
 
 
 function handleMsgBroadcast(socket, nickNames) {
-
+	socket.on('messsage', function(message) {
+		socket.broadcast.to(message.room).emit('message', {
+			text: nickNames[socket.id] + ': ' + message.text
+		});
+	});
 }
 
 function handleNameChangeAttempts(socket, nickNames, namesUsed) {
