@@ -43,3 +43,4 @@ Chat.prototype.processCommand = function(command) {
 
   return message;
 };
+
