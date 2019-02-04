@@ -15,7 +15,6 @@ exports.listen = function(server) {
 	io.sockets.on('connection', function (socket) {
 		guestNumber = assignGuestName(socket, guestNumber, nickNames, namesUsed);
 
-		console.log("checkpoint 1");
 		joinRoom(socket, 'Lobby'); // place user in lobby upon connection
 
 		handleMsgBroadcast(socket, nickNames); // handle user messages
@@ -51,7 +50,6 @@ function assignGuestName(socket, guestNumber, nickNames, namesUsed) {
 }
 
 function joinRoom(socket, room) {
-	console.log("checkpoint 2");
 	socket.join(room);
 	currentRoom[socket.id] = room;
 	socket.emit('joinResult', {room: room});
@@ -59,10 +57,7 @@ function joinRoom(socket, room) {
 		text: nickNames[socket.id] + ' has joined ' + room + '.'
 	});
 
-	console.log("checkpoint 3");
-
 	var usersInRoom = io.sockets.clients(room);
-	console.log("checkpoint 4");
 
 	if (usersInRoom.length > 1) {
 		var usersInRoomSummary = 'Participants currently in ' + room + ': ';
@@ -132,7 +127,7 @@ function handleRoomJoin(socket) {
 
 function handleClientDisconnect(socket) {
   socket.on('disconnect', function() {
-    var nameIndex = names.indexOf(nickNames[socket.id]);
+    var nameIndex = namesUsed.indexOf(nickNames[socket.id]);
     delete namesUsed[nameIndex];
     delete nickNames[socket.id];
   });
